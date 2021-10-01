@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  main:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -22,3 +22,5 @@ jobs:
     - name: Build (Windows)
       if: matrix.os == 'windows-latest'
       run: nmake -nologo
+    - name: Test
+      run: ./simd-integration
