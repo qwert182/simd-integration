@@ -2,6 +2,7 @@ EXENAME=simd-integration
 OBJS=$(OBJDIR)/integration$(OBJEXT)
 
 ENABLE_DEBUG_INFO=1
+ENABLE_WARNINGS=1
 
 SRCDIR=src
 OBJDIR=out
@@ -20,6 +21,10 @@ CFLAGS=$(CFLAGS) -MD
 !if $(ENABLE_DEBUG_INFO)-0 == 1
 CFLAGS=$(CFLAGS) -Zi
 COMPILE=$(COMPILE) -Fd"$(OBJDIR)\vc.pdb"
+!endif
+
+!if $(ENABLE_WARNINGS)-0 == 1
+CFLAGS=$(CFLAGS) -W4
 !endif
 
 $(EXENAME)$(EXEEXT): $(OBJDIR)/$(EXENAME)$(EXEEXT)
@@ -61,6 +66,10 @@ LINK=$(CC) $(CFLAGS)
 
 ifeq ($(ENABLE_DEBUG_INFO),1)
 CFLAGS+= -g
+endif
+
+ifeq ($(ENABLE_WARNINGS),1)
+CFLAGS+= -Wall -Wextra -Wconversion
 endif
 
 $(OBJDIR)/$(EXENAME)$(EXEEXT): $(OBJS)
