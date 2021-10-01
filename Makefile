@@ -1,5 +1,5 @@
 EXENAME=simd-integration
-OBJS=$(OBJDIR)/integration$(OBJEXT)
+OBJS=$(OBJDIR)/integration$(OBJEXT) $(OBJDIR)/methods$(OBJEXT)
 
 ENABLE_DEBUG_INFO=1
 ENABLE_WARNINGS=1

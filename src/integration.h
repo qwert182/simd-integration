@@ -1,9 +1,22 @@
-typedef float main_t;
+#pragma once
 
-typedef main_t (*func_t)(main_t x);
+#if 1 // float
+    typedef float number_t;
+    #define NUMBER_T_VALUE(c) c##f
+    #define SQRT(x) sqrtf(x)
+    #define NUMBER_T_FMT "f"
+#else // double
+    typedef double number_t;
+    #define NUMBER_T_VALUE(c) c
+    #define SQRT(x) sqrt(x)
+    #define NUMBER_T_FMT "lf"
+#endif
+
+typedef number_t (*func_t)(number_t x);
 
 struct integrate_params_t {
-    main_t x_start, x_end;
+    number_t a, b;
+    int n;
 };
 
-typedef main_t (*integrate_func_t)(func_t func, struct integrate_params_t params);
+typedef number_t (*integrate_method_t)(func_t, struct integrate_params_t *);
