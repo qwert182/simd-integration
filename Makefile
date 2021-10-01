@@ -1,5 +1,7 @@
 EXENAME=simd-integration
-OBJS=$(OBJDIR)/integration$(OBJEXT) $(OBJDIR)/methods$(OBJEXT)
+OBJS=$(OBJDIR)/integration$(OBJEXT) \
+  $(OBJDIR)/methods$(OBJEXT) \
+  $(OBJDIR)/utils$(OBJEXT)
 
 ENABLE_DEBUG_INFO=1
 ENABLE_WARNINGS=1
@@ -24,7 +26,7 @@ COMPILE=$(COMPILE) -Fd"$(OBJDIR)\vc.pdb"
 !endif
 
 !if $(ENABLE_WARNINGS)-0 == 1
-CFLAGS=$(CFLAGS) -W4
+CFLAGS=$(CFLAGS) -W4 -wd4204
 !endif
 
 $(EXENAME)$(EXEEXT): $(OBJDIR)/$(EXENAME)$(EXEEXT)
@@ -59,6 +61,7 @@ clean:
 else # Linux/Mac
 
 .PHONY: all
+UNAME_S:=$(shell uname -s)
 EXEEXT=
 OBJEXT=.o
 COMPILE=$(CC) -c $(CFLAGS)
@@ -71,6 +74,11 @@ endif
 
 ifeq ($(ENABLE_WARNINGS),1)
 CFLAGS+= -Wall -Wextra -Wconversion
+ifeq ($(UNAME_S),Darwin)
+CFLAGS+= -Wno-unused-local-typedef
+else
+CFLAGS+= -Wno-unused-local-typedefs
+endif
 endif
 
 $(OBJDIR)/$(EXENAME)$(EXEEXT): $(OBJS)
