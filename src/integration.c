@@ -17,10 +17,15 @@ void test_computing_pi(integrate_method_t integrate_method,
                        int n)
 {
     struct integrate_params_t params = {
-        NUMBER_T_VALUE(-1.0), NUMBER_T_VALUE(1.0), n
+        NUMBER_T_VALUE(-1.0), NUMBER_T_VALUE(1.0), 10000
     };
     number_t pi;
     utime_t start, end;
+
+    volatile number_t warm_up = integrate_method(semicircle, &params);
+    (void)warm_up;
+
+    params.n = n;
 
     printf("using %s method\n", method_name);
     fflush(stdout);
