@@ -9,9 +9,10 @@ number_t integrate_rectangle_method(func_t func,
 {
     number_t result = 0;
     number_t h = (params->b - params->a) / (number_t)params->n;
+    number_t a_plus_half_h = params->a + h * NUMBER_T_VALUE(0.5);
 
     for (int i = 0; i < params->n; i++) {
-        result += func(params->a + h * ((number_t)i + NUMBER_T_VALUE(0.5)));
+        result += func(a_plus_half_h + h * (number_t)i);
     }
 
     return result * h;
