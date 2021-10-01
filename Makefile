@@ -53,13 +53,31 @@ clean:
 !else
 else # Linux/Mac
 
-
 .PHONY: all
 EXEEXT=
 OBJEXT=.o
+COMPILE=$(CC) -c $(CFLAGS)
+LINK=$(CC) $(CFLAGS)
 
-$(EXENAME)$(EXEEXT): #$(OBJS)
-	echo test make
+ifeq ($(ENABLE_DEBUG_INFO),1)
+CFLAGS+= -g
+endif
+
+$(OBJDIR)/$(EXENAME)$(EXEEXT): $(OBJS)
+	cd $(OBJDIR) && $(LINK) -o $(@F) $(+F)
+
+$(EXENAME)$(EXEEXT): $(OBJDIR)/$(EXENAME)$(EXEEXT)
+	cp -f $< $@
+
+$(OBJDIR)/%$(OBJEXT): $(SRCDIR)/%.c $(SRCDIR)/*.h | $(OBJDIR)
+	$(COMPILE) -o $@ $<
+
+$(OBJDIR):
+	@mkdir $(OBJDIR)
+
+clean:
+	$(RM) -r $(OBJDIR)
+	$(RM) $(EXENAME)$(EXEEXT)
 
 endif
 !endif :
