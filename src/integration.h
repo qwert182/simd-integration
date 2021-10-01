@@ -1,6 +1,6 @@
 #pragma once
 
-#if 1 // float
+#if 0 // float
     typedef float number_t;
     #define NUMBER_T_VALUE(c) c##f
     #define SQRT(x) sqrtf(x)
