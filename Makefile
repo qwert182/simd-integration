@@ -34,7 +34,7 @@ $(OBJDIR)/$(EXENAME)$(EXEEXT): $(OBJDIR) $(OBJDIR)/.hdr $(OBJS)
 	@cd $(OBJDIR)
 	@set OBJS=$(OBJS)
 	@call echo Linking $@: %%OBJS:$(OBJDIR)/=%%
-	$(LINK) -Fe"$(@F)" %%OBJS:$(OBJDIR)/=%% -link $(LFLAGS)
+	$(LINK) -Fe"$(@F)" %%OBJS:$(OBJDIR)/=%% -link $(LDFLAGS)
 	@cd ..
 
 $(OBJDIR):
@@ -62,6 +62,7 @@ else # Linux/Mac
 EXEEXT=
 OBJEXT=.o
 COMPILE=$(CC) -c $(CFLAGS)
+LDFLAGS+= -lm
 LINK=$(CC) $(CFLAGS)
 
 ifeq ($(ENABLE_DEBUG_INFO),1)
@@ -73,7 +74,7 @@ CFLAGS+= -Wall -Wextra -Wconversion
 endif
 
 $(OBJDIR)/$(EXENAME)$(EXEEXT): $(OBJS)
-	cd $(OBJDIR) && $(LINK) -o $(@F) $(+F)
+	cd $(OBJDIR) && $(LINK) -o $(@F) $(+F) $(LDFLAGS)
 
 $(EXENAME)$(EXEEXT): $(OBJDIR)/$(EXENAME)$(EXEEXT)
 	cp -f $< $@
