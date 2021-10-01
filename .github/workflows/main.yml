@@ -23,4 +23,20 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: nmake -nologo
     - name: Test
-      run: ./simd-integration
+      shell: bash
+      run: |
+        set -euo pipefail
+        err=0
+        ./simd-integration 2>&1 | tee output.log || err=$?
+        echo "::group::Publish logs"
+        content=$(cat output.log)
+        content=${content//'%'/'%25'}
+        content=${content//$'\n'/'%0A'}
+        content=${content//$'\r'/'%0D'}
+        if [ $err = 0 ]; then
+            echo "::notice file=output.log::${content}"
+        else
+            echo "::error file=output.log::${content}"
+        fi
+        echo "::endgroup::"
+        exit $err
