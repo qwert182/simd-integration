@@ -19,6 +19,7 @@ OBJEXT=.obj
 COMPILE=$(CC) -nologo -c $(CFLAGS)
 LINK=$(CC) -nologo $(CFLAGS)
 CFLAGS=$(CFLAGS) -MD
+OPTS_FLAGS_DEFAULT=-Od
 
 !if $(ENABLE_DEBUG_INFO)-0 == 1
 CFLAGS=$(CFLAGS) -Zi
@@ -44,7 +45,7 @@ $(OBJDIR):
 
 {$(SRCDIR)}.c{$(OBJDIR)}$(OBJEXT)::
 	-@for %%I in ($<) do @del $(OBJDIR)\%%~nI$(OBJEXT) >nul 2>&1
-	-$(COMPILE) $<
+	-$(COMPILE) $(OPTS_FLAGS_DEFAULT) $<
 	-@for %%I in ($<) do @move /y %%~nI$(OBJEXT) $(OBJDIR) >nul 2>&1
 	@for %%I in ($<) do @if not exist $(OBJDIR)\%%~nI$(OBJEXT) exit /b 1
 
@@ -67,6 +68,7 @@ OBJEXT=.o
 COMPILE=$(CC) -c $(CFLAGS)
 LDFLAGS+= -lm
 LINK=$(CC) $(CFLAGS)
+OPTS_FLAGS_DEFAULT=-O0
 
 ifeq ($(ENABLE_DEBUG_INFO),1)
 CFLAGS+= -g
@@ -88,7 +90,7 @@ $(EXENAME)$(EXEEXT): $(OBJDIR)/$(EXENAME)$(EXEEXT)
 	cp -f $< $@
 
 $(OBJDIR)/%$(OBJEXT): $(SRCDIR)/%.c $(SRCDIR)/*.h | $(OBJDIR)
-	$(COMPILE) -o $@ $<
+	$(COMPILE) $(OPTS_FLAGS_DEFAULT) -o $@ $<
 
 $(OBJDIR):
 	@mkdir $(OBJDIR)
