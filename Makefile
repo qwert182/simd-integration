@@ -19,6 +19,7 @@ CFLAGS=$(CFLAGS) -MD
 
 !if $(ENABLE_DEBUG_INFO)-0 == 1
 CFLAGS=$(CFLAGS) -Zi
+COMPILE=$(COMPILE) -Fd"$(OBJDIR)\vc.pdb"
 !endif
 
 $(EXENAME)$(EXEEXT): $(OBJDIR)/$(EXENAME)$(EXEEXT)
@@ -37,7 +38,6 @@ $(OBJDIR):
 {$(SRCDIR)}.c{$(OBJDIR)}$(OBJEXT)::
 	-@for %%I in ($<) do @del $(OBJDIR)\%%~nI$(OBJEXT) >nul 2>&1
 	-$(COMPILE) $<
-	-@move /y *.pdb $(OBJDIR) >nul 2>&1
 	-@for %%I in ($<) do @move /y %%~nI$(OBJEXT) $(OBJDIR) >nul 2>&1
 	@for %%I in ($<) do @if not exist $(OBJDIR)\%%~nI$(OBJEXT) exit /b 1
 
