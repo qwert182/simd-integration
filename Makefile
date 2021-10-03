@@ -1,6 +1,7 @@
 EXENAME=simd-integration
 OBJS=$(OBJDIR)/integration$(OBJEXT) \
   $(OBJDIR)/methods$(OBJEXT) \
+  $(OBJDIR)/functions$(OBJEXT) \
   $(OBJDIR)/utils$(OBJEXT)
 
 ENABLE_DEBUG_INFO=1

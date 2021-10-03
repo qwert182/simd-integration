@@ -1,16 +1,9 @@
 #include "integration.h"
 #include "utils.h"
 #include <stdio.h>
-#include <math.h>
 
 #include "methods.h"
-
-/*
- * https://en.wikipedia.org/wiki/Semicircle#Equation
- */
-double semicircle(double x) {
-    return sqrt(1.0 - x*x);
-}
+#include "functions.h"
 
 void test_computing_pi(integrate_method_t integrate,
                        const char *method_name,
