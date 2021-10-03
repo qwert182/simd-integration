@@ -1,7 +1,7 @@
 EXENAME=simd-integration
 OBJS=$(OBJDIR)/integration$(OBJEXT) \
   $(OBJDIR)/methods$(OBJEXT) \
-  $(OBJDIR)/functions$(OBJEXT) \
+  $(OBJDIR)/functions_opt$(OBJEXT) \
   $(OBJDIR)/utils$(OBJEXT)
 
 ENABLE_DEBUG_INFO=1
@@ -21,6 +21,7 @@ COMPILE=$(CC) -nologo -c $(CFLAGS)
 LINK=$(CC) -nologo $(CFLAGS)
 CFLAGS=$(CFLAGS) -MD
 OPTS_FLAGS_DEFAULT=-Od
+OPTS_FLAGS=-O2
 
 !if $(ENABLE_DEBUG_INFO)-0 == 1
 CFLAGS=$(CFLAGS) -Zi
@@ -54,6 +55,10 @@ $(OBJDIR)/.hdr: $(SRCDIR)/*.h
 	@echo %%DATE%% %%TIME%%> $@
 	-@del $(OBJS:/=\\)>nul 2>&1
 
+### Optimized functions.c ###
+$(OBJDIR)/functions_opt$(OBJEXT): $(SRCDIR)\functions.c
+	$(COMPILE) $(OPTS_FLAGS) -Fo"$@" $**
+
 clean:
 	-rd /s /q $(OBJDIR)
 	-del $(EXENAME)$(EXEEXT)
@@ -70,6 +75,7 @@ COMPILE=$(CC) -c $(CFLAGS)
 LDFLAGS+= -lm
 LINK=$(CC) $(CFLAGS)
 OPTS_FLAGS_DEFAULT=-O0
+OPTS_FLAGS=-O2
 
 ifeq ($(ENABLE_DEBUG_INFO),1)
 CFLAGS+= -g
@@ -95,6 +101,10 @@ $(OBJDIR)/%$(OBJEXT): $(SRCDIR)/%.c $(SRCDIR)/*.h | $(OBJDIR)
 
 $(OBJDIR):
 	@mkdir $(OBJDIR)
+
+### Optimized functions.c ###
+$(OBJDIR)/functions_opt$(OBJEXT): $(SRCDIR)/functions.c $(SRCDIR)/*.h | $(OBJDIR)
+	$(COMPILE) $(OPTS_FLAGS) -o $@ $<
 
 clean:
 	$(RM) -r $(OBJDIR)
