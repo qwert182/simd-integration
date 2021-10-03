@@ -1,6 +1,7 @@
 EXENAME=simd-integration
 OBJS=$(OBJDIR)/integration$(OBJEXT) \
   $(OBJDIR)/methods$(OBJEXT) \
+  $(OBJDIR)/methods_opt$(OBJEXT) \
   $(OBJDIR)/functions_opt$(OBJEXT) \
   $(OBJDIR)/utils$(OBJEXT)
 
@@ -59,6 +60,10 @@ $(OBJDIR)/.hdr: $(SRCDIR)/*.h
 $(OBJDIR)/functions_opt$(OBJEXT): $(SRCDIR)\functions.c
 	$(COMPILE) $(OPTS_FLAGS) -Fo"$@" $**
 
+### Optimized methods.c ###
+$(OBJDIR)/methods_opt$(OBJEXT): $(SRCDIR)\methods.c
+	$(COMPILE) $(OPTS_FLAGS) -D"INTEGRATE_OPT=optimized" -Fo"$@" $**
+
 clean:
 	-rd /s /q $(OBJDIR)
 	-del $(EXENAME)$(EXEEXT)
@@ -105,6 +110,10 @@ $(OBJDIR):
 ### Optimized functions.c ###
 $(OBJDIR)/functions_opt$(OBJEXT): $(SRCDIR)/functions.c $(SRCDIR)/*.h | $(OBJDIR)
 	$(COMPILE) $(OPTS_FLAGS) -o $@ $<
+
+### Optimized methods.c ###
+$(OBJDIR)/methods_opt$(OBJEXT): $(SRCDIR)/methods.c $(SRCDIR)/*.h | $(OBJDIR)
+	$(COMPILE) $(OPTS_FLAGS) -D"INTEGRATE_OPT=optimized" -o $@ $<
 
 clean:
 	$(RM) -r $(OBJDIR)

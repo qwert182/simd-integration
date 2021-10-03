@@ -37,5 +37,8 @@ int main() {
     test_computing_pi(integrate_rectangle, "rectangle", n);
     test_computing_pi(integrate_trapezoidal, "trapezoidal", n);
     test_computing_pi(integrate_simpson, "simpson", n);
+    test_computing_pi(integrate_rectangle_optimized, "rectangle (-O2)", n);
+    test_computing_pi(integrate_trapezoidal_optimized, "trapezoidal (-O2)", n);
+    test_computing_pi(integrate_simpson_optimized, "simpson (-O2)", n);
     return 0;
 }
