@@ -2,6 +2,6 @@
 
 #include "integration.h"
 
-number_t integrate_rectangle_method(func_t, struct integrate_params_t *);
-number_t integrate_trapezoidal_method(func_t, struct integrate_params_t *);
-number_t integrate_simpson_method(func_t, struct integrate_params_t *);
+double integrate_rectangle(func_t, struct integrate_params_t *);
+double integrate_trapezoidal(func_t, struct integrate_params_t *);
+double integrate_simpson(func_t, struct integrate_params_t *);
