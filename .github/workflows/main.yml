@@ -39,7 +39,17 @@ jobs:
       run: |
         set -euo pipefail
         err=0
-        ./simd-integration 2>&1 | tee output.log || err=$?
+        {
+            echo 'CPU info:'
+            if [[ ${{ matrix.os }} =~ ^macos ]]; then
+                sysctl -a | grep ^machdep.cpu
+            else
+                sed -n '/^$/{q};p' /proc/cpuinfo
+            fi
+            echo
+            echo './simd-integration:'
+            ./simd-integration 2>&1
+        } | tee output.log || err=$?
         echo "::group::Publish logs"
         content=$(cat output.log)
         content=${content//'%'/'%25'}
