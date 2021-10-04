@@ -18,10 +18,22 @@ jobs:
       if: matrix.os == 'windows-latest'
     - name: Build
       if: matrix.os != 'windows-latest'
-      run: make
+      run: |
+        make
+        if [[ ${{ matrix.os }} =~ ^macos ]]; then
+            objdump -d --x86-asm-syntax=intel simd-integration > objdump-${{ matrix.os }}.asm
+        else
+            objdump -d -M intel simd-integration > objdump-${{ matrix.os }}.asm
+        fi
     - name: Build (Windows)
       if: matrix.os == 'windows-latest'
-      run: nmake -nologo
+      run: |
+        nmake -nologo
+        dumpbin /out:objdump-${{ matrix.os }}.asm /section:.text /disasm simd-integration.exe
+    - uses: actions/upload-artifact@v2
+      with:
+        name: objdump-${{ matrix.os }}
+        path: objdump-${{ matrix.os }}.asm
     - name: Test
       shell: bash
       run: |
