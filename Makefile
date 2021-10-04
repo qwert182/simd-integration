@@ -3,7 +3,7 @@ OBJS=$(OBJDIR)/integration$(OBJEXT) \
   $(OBJDIR)/methods$(OBJEXT) \
   $(OBJDIR)/methods_opt$(OBJEXT) \
   $(OBJDIR)/functions_opt$(OBJEXT) \
-  $(OBJDIR)/utils$(OBJEXT)
+  $(OBJDIR)/utils_opt$(OBJEXT)
 
 ENABLE_DEBUG_INFO=1
 ENABLE_WARNINGS=1
@@ -60,6 +60,10 @@ $(OBJDIR)/.hdr: $(SRCDIR)/*.h
 $(OBJDIR)/functions_opt$(OBJEXT): $(SRCDIR)\functions.c
 	$(COMPILE) $(OPTS_FLAGS) -Fo"$@" $**
 
+### Optimized utils.c ###
+$(OBJDIR)/utils_opt$(OBJEXT): $(SRCDIR)\utils.c
+	$(COMPILE) $(OPTS_FLAGS) -Fo"$@" $**
+
 ### Optimized methods.c ###
 $(OBJDIR)/methods_opt$(OBJEXT): $(SRCDIR)\methods.c
 	$(COMPILE) $(OPTS_FLAGS) -D"INTEGRATE_OPT=optimized" -Fo"$@" $**
@@ -109,6 +113,10 @@ $(OBJDIR):
 
 ### Optimized functions.c ###
 $(OBJDIR)/functions_opt$(OBJEXT): $(SRCDIR)/functions.c $(SRCDIR)/*.h | $(OBJDIR)
+	$(COMPILE) $(OPTS_FLAGS) -o $@ $<
+
+### Optimized utils.c ###
+$(OBJDIR)/utils_opt$(OBJEXT): $(SRCDIR)/utils.c $(SRCDIR)/*.h | $(OBJDIR)
 	$(COMPILE) $(OPTS_FLAGS) -o $@ $<
 
 ### Optimized methods.c ###
