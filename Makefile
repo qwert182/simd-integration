@@ -2,6 +2,7 @@ EXENAME=simd-integration
 OBJS=$(OBJDIR)/integration$(OBJEXT) \
   $(OBJDIR)/methods$(OBJEXT) \
   $(OBJDIR)/methods_opt$(OBJEXT) \
+  $(OBJDIR)/methods_vec2_sse_opt$(OBJEXT) \
   $(OBJDIR)/functions_opt$(OBJEXT) \
   $(OBJDIR)/utils_opt$(OBJEXT)
 
@@ -68,6 +69,10 @@ $(OBJDIR)/utils_opt$(OBJEXT): $(SRCDIR)\utils.c
 $(OBJDIR)/methods_opt$(OBJEXT): $(SRCDIR)\methods.c
 	$(COMPILE) $(OPTS_FLAGS) -D"INTEGRATE_OPT=optimized" -Fo"$@" $**
 
+### Optimized methods_vec2_sse.c ###
+$(OBJDIR)/methods_vec2_sse_opt$(OBJEXT): $(SRCDIR)\methods_vec2_sse.c
+	$(COMPILE) $(OPTS_FLAGS) -Fo"$@" $**
+
 clean:
 	-rd /s /q $(OBJDIR)
 	-del $(EXENAME)$(EXEEXT)
@@ -122,6 +127,10 @@ $(OBJDIR)/utils_opt$(OBJEXT): $(SRCDIR)/utils.c $(SRCDIR)/*.h | $(OBJDIR)
 ### Optimized methods.c ###
 $(OBJDIR)/methods_opt$(OBJEXT): $(SRCDIR)/methods.c $(SRCDIR)/*.h | $(OBJDIR)
 	$(COMPILE) $(OPTS_FLAGS) -D"INTEGRATE_OPT=optimized" -o $@ $<
+
+### Optimized methods_vec2_sse.c ###
+$(OBJDIR)/methods_vec2_sse_opt$(OBJEXT): $(SRCDIR)/methods_vec2_sse.c $(SRCDIR)/*.h | $(OBJDIR)
+	$(COMPILE) $(OPTS_FLAGS) -o $@ $<
 
 clean:
 	$(RM) -r $(OBJDIR)

@@ -1,10 +1,10 @@
 #pragma once
 
-typedef double (*func_t)(double x);
+#include "functions.h"
 
 struct integrate_params_t {
     double a, b;
     int n;
 };
 
-typedef double (*integrate_method_t)(func_t, struct integrate_params_t *);
+typedef double (*integrate_method_t)(union func_t, struct integrate_params_t *);

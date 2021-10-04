@@ -36,3 +36,10 @@ void utime_get(utime_t *out);
 #else
 #define COMPILE_TIME_ASSERT(cond) typedef char COMPILE_TIME_ASSERT_FAILED##__LINE__[!!(cond)*2 - 1]
 #endif
+
+// __vectorcall is available only on Windows but NOT with gcc
+#if defined(_WIN32) && !defined(__GNUC__)
+#define VECTORCALL __vectorcall
+#else
+#define VECTORCALL
+#endif
