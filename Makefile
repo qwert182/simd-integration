@@ -1,10 +1,10 @@
 EXENAME=simd-integration
 OBJS=$(OBJDIR)/integration$(OBJEXT) \
-  $(OBJDIR)/methods$(OBJEXT) \
+  $(OBJDIR)/methods_noopt$(OBJEXT) \
   $(OBJDIR)/methods_opt$(OBJEXT) \
-  $(OBJDIR)/methods_vec2_sse_opt$(OBJEXT) \
-  $(OBJDIR)/functions_opt$(OBJEXT) \
-  $(OBJDIR)/utils_opt$(OBJEXT)
+  $(OBJDIR)/methods_vec2_sse$(OBJEXT) \
+  $(OBJDIR)/functions$(OBJEXT) \
+  $(OBJDIR)/utils$(OBJEXT)
 
 ENABLE_DEBUG_INFO=1
 ENABLE_WARNINGS=1
@@ -22,8 +22,9 @@ OBJEXT=.obj
 COMPILE=$(CC) -nologo -c $(CFLAGS)
 LINK=$(CC) -nologo $(CFLAGS)
 CFLAGS=$(CFLAGS) -MD
-OPTS_FLAGS_DEFAULT=-Od
+OPTS_FLAGS_NOOPT=-Od
 OPTS_FLAGS=-O2
+LDFLAGS=$(LDFLAGS) -incremental:no
 
 !if $(ENABLE_DEBUG_INFO)-0 == 1
 CFLAGS=$(CFLAGS) -Zi
@@ -49,7 +50,7 @@ $(OBJDIR):
 
 {$(SRCDIR)}.c{$(OBJDIR)}$(OBJEXT)::
 	-@for %%I in ($<) do @del $(OBJDIR)\%%~nI$(OBJEXT) >nul 2>&1
-	-$(COMPILE) $(OPTS_FLAGS_DEFAULT) $<
+	-$(COMPILE) $(OPTS_FLAGS) $<
 	-@for %%I in ($<) do @move /y %%~nI$(OBJEXT) $(OBJDIR) >nul 2>&1
 	@for %%I in ($<) do @if not exist $(OBJDIR)\%%~nI$(OBJEXT) exit /b 1
 
@@ -57,21 +58,13 @@ $(OBJDIR)/.hdr: $(SRCDIR)/*.h
 	@echo %%DATE%% %%TIME%%> $@
 	-@del $(OBJS:/=\\)>nul 2>&1
 
-### Optimized functions.c ###
-$(OBJDIR)/functions_opt$(OBJEXT): $(SRCDIR)\functions.c
-	$(COMPILE) $(OPTS_FLAGS) -Fo"$@" $**
-
-### Optimized utils.c ###
-$(OBJDIR)/utils_opt$(OBJEXT): $(SRCDIR)\utils.c
-	$(COMPILE) $(OPTS_FLAGS) -Fo"$@" $**
+### Not optimized methods.c ###
+$(OBJDIR)/methods_noopt$(OBJEXT): $(SRCDIR)\methods.c
+	$(COMPILE) $(OPTS_FLAGS_NOOPT) -Fo"$@" $**
 
 ### Optimized methods.c ###
 $(OBJDIR)/methods_opt$(OBJEXT): $(SRCDIR)\methods.c
 	$(COMPILE) $(OPTS_FLAGS) -D"INTEGRATE_OPT=optimized" -Fo"$@" $**
-
-### Optimized methods_vec2_sse.c ###
-$(OBJDIR)/methods_vec2_sse_opt$(OBJEXT): $(SRCDIR)\methods_vec2_sse.c
-	$(COMPILE) $(OPTS_FLAGS) -Fo"$@" $**
 
 clean:
 	-rd /s /q $(OBJDIR)
@@ -88,7 +81,7 @@ OBJEXT=.o
 COMPILE=$(CC) -c $(CFLAGS)
 #LDFLAGS+= -lm
 LINK=$(CC) $(CFLAGS)
-OPTS_FLAGS_DEFAULT=-O0
+OPTS_FLAGS_NOOPT=-O0
 OPTS_FLAGS=-O2
 
 ifeq ($(ENABLE_DEBUG_INFO),1)
@@ -111,26 +104,18 @@ $(EXENAME)$(EXEEXT): $(OBJDIR)/$(EXENAME)$(EXEEXT)
 	cp -f $< $@
 
 $(OBJDIR)/%$(OBJEXT): $(SRCDIR)/%.c $(SRCDIR)/*.h | $(OBJDIR)
-	$(COMPILE) $(OPTS_FLAGS_DEFAULT) -o $@ $<
+	$(COMPILE) $(OPTS_FLAGS) -o $@ $<
 
 $(OBJDIR):
 	@mkdir $(OBJDIR)
-
-### Optimized functions.c ###
-$(OBJDIR)/functions_opt$(OBJEXT): $(SRCDIR)/functions.c $(SRCDIR)/*.h | $(OBJDIR)
-	$(COMPILE) $(OPTS_FLAGS) -o $@ $<
-
-### Optimized utils.c ###
-$(OBJDIR)/utils_opt$(OBJEXT): $(SRCDIR)/utils.c $(SRCDIR)/*.h | $(OBJDIR)
-	$(COMPILE) $(OPTS_FLAGS) -o $@ $<
 
 ### Optimized methods.c ###
 $(OBJDIR)/methods_opt$(OBJEXT): $(SRCDIR)/methods.c $(SRCDIR)/*.h | $(OBJDIR)
 	$(COMPILE) $(OPTS_FLAGS) -D"INTEGRATE_OPT=optimized" -o $@ $<
 
-### Optimized methods_vec2_sse.c ###
-$(OBJDIR)/methods_vec2_sse_opt$(OBJEXT): $(SRCDIR)/methods_vec2_sse.c $(SRCDIR)/*.h | $(OBJDIR)
-	$(COMPILE) $(OPTS_FLAGS) -o $@ $<
+### Not optimized methods.c ###
+$(OBJDIR)/methods_noopt$(OBJEXT): $(SRCDIR)/methods.c $(SRCDIR)/*.h | $(OBJDIR)
+	$(COMPILE) $(OPTS_FLAGS_NOOPT) -o $@ $<
 
 clean:
 	$(RM) -r $(OBJDIR)
