@@ -14,9 +14,14 @@ DECLARE_METHOD(integrate_rectangle_sse)
     double h = (params->b - params->a) / (double)params->n;
     double a_plus_half_h = params->a + h * 0.5;
 
+    const __m128d two_two = {2.0, 2.0};
+    const __m128d a_plus_half_h_vec2 = {a_plus_half_h, a_plus_half_h};
+    const __m128d h_h = {h, h};
+    __m128d i_iplus1 = {0.0, 1.0};
     for (int i = 0; i < n_no_tail; i += 2) {
-        __m128d arg = {a_plus_half_h + h * (double)i, a_plus_half_h + h * (double)(i+1)};
+        __m128d arg = _mm_add_pd(a_plus_half_h_vec2, _mm_mul_pd(h_h, i_iplus1));
         result_vec2 = _mm_add_pd(result_vec2, f(arg));
+        i_iplus1 = _mm_add_pd(i_iplus1, two_two);
     }
 
     double result = _mm_cvtsd_f64(result_vec2) + _mm_cvtsd_f64(_mm_unpackhi_pd(result_vec2, result_vec2));
