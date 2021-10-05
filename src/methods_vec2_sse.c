@@ -32,3 +32,34 @@ DECLARE_METHOD(integrate_rectangle_sse)
 
     return result * h;
 }
+
+DECLARE_METHOD(integrate_trapezoidal_sse)
+{
+    vec2_func_t f = func.vec2;
+    int n_has_tail = (params->n - 1) % 2;
+    int iter_num = (params->n - 1) / 2;
+    __m128d result_vec2 = {0.5, 0.5};
+    double h = (params->b - params->a) / (double)params->n;
+
+    const __m128d a_b = {params->a, params->b};
+    result_vec2 = _mm_mul_pd(result_vec2, f(a_b));
+
+    const __m128d two_two = {2.0, 2.0};
+    const __m128d a_a = {params->a, params->a};
+    const __m128d h_h = {h, h};
+    __m128d i_iplus1 = {1.0, 2.0};
+    for (int i = 0; i < iter_num; i++) {
+        __m128d arg = _mm_add_pd(a_a, _mm_mul_pd(h_h, i_iplus1));
+        result_vec2 = _mm_add_pd(result_vec2, f(arg));
+        i_iplus1 = _mm_add_pd(i_iplus1, two_two);
+    }
+
+    double result = _mm_cvtsd_f64(result_vec2) + _mm_cvtsd_f64(_mm_unpackhi_pd(result_vec2, result_vec2));
+    if (n_has_tail) {
+        __m128d arg = {params->a + h * (double)(params->n - 1), 0};
+        result += _mm_cvtsd_f64(f(arg));
+    }
+
+    return result * h;
+}
+
