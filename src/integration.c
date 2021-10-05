@@ -51,11 +51,12 @@ int main() {
     int n = 300000000;
     test_computing_pi(integrate_rectangle, "rectangle", n, SCALAR);
     test_computing_pi(integrate_trapezoidal, "trapezoidal", n, SCALAR);
-    //test_computing_pi(integrate_simpson, "simpson", n, SCALAR);
+    test_computing_pi(integrate_simpson, "simpson", n, SCALAR);
     test_computing_pi(integrate_rectangle_optimized, "rectangle (-O2)", n, SCALAR);
     test_computing_pi(integrate_trapezoidal_optimized, "trapezoidal (-O2)", n, SCALAR);
-    //test_computing_pi(integrate_simpson_optimized, "simpson (-O2)", n, SCALAR);
+    test_computing_pi(integrate_simpson_optimized, "simpson (-O2)", n, SCALAR);
     test_computing_pi(integrate_rectangle_sse, "rectangle vec2 (manual SSE)", n, VECTOR2);
     test_computing_pi(integrate_trapezoidal_sse, "trapezoidal vec2 (manual SSE)", n, VECTOR2);
+    test_computing_pi(integrate_simpson_sse, "simpson vec2 (manual SSE)", n, VECTOR2);
     return 0;
 }

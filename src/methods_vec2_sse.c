@@ -63,3 +63,30 @@ DECLARE_METHOD(integrate_trapezoidal_sse)
     return result * h;
 }
 
+DECLARE_METHOD(integrate_simpson_sse)
+{
+    vec2_func_t f = func.vec2;
+    double h = (params->b - params->a) / (double)params->n;
+
+    assert(params->n % 2 == 0);
+
+    const __m128d four_two = {4.0, 2.0};
+    __m128d result_vec2 = {params->a, params->b};
+    result_vec2 = _mm_div_pd(f(result_vec2), four_two);
+
+    int n = params->n;
+    const __m128d two_two = {2.0, 2.0};
+    const __m128d a_a = {params->a, params->a};
+    const __m128d h_h = {h, h};
+    __m128d i_iplus1 = {1.0, 2.0};
+    for (int i = 1; i < n; i += 2) {
+        __m128d arg = _mm_add_pd(a_a, _mm_mul_pd(h_h, i_iplus1));
+        result_vec2 = _mm_add_pd(result_vec2, f(arg));
+        i_iplus1 = _mm_add_pd(i_iplus1, two_two);
+    }
+
+    result_vec2 = _mm_mul_pd(result_vec2, four_two);
+
+    double result = _mm_cvtsd_f64(result_vec2) + _mm_cvtsd_f64(_mm_unpackhi_pd(result_vec2, result_vec2));
+    return result * h / 3.0;
+}

@@ -30,3 +30,4 @@ DECLARE_METHOD_OPT(integrate_simpson, optimized);
 
 DECLARE_METHOD_OPT(integrate_rectangle, sse);
 DECLARE_METHOD_OPT(integrate_trapezoidal, sse);
+DECLARE_METHOD_OPT(integrate_simpson, sse);
