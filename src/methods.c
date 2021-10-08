@@ -11,10 +11,10 @@ DECLARE_METHOD(integrate_rectangle)
     scalar_func_t f = func.scalar;
     double result = 0;
     double h = (params->b - params->a) / (double)params->n;
-    double a_plus_half_h = params->a + h * 0.5;
+    double a_plus_05_h = params->a + h * 0.5;
 
     for (int i = 0; i < params->n; i++) {
-        result += f(a_plus_half_h + h * (double)i);
+        result += f(a_plus_05_h + h * (double)i);
     }
 
     return result * h;
